@@ -7,6 +7,9 @@ import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+
+import java.io.IOException;
 
 @Slf4j
 @Configuration
@@ -15,26 +18,12 @@ public class RedissionConfig {
     @Autowired
     private RedisProperties redisProperties;
 
-    @Bean
-    public RedissonClient redissonClient(){
-        RedissonClient redissonClient;
-        Config config = new Config();
-        String url = "redis://" + redisProperties.getHost()
-                + ":" + redisProperties.getPort();
-        config.useSingleServer().setAddress(url) //单机
-                .setPassword(redisProperties.getPassword())
-                .setDatabase(redisProperties.getDatabase());
-        //添加主从配置
-        //config.useMasterSlaveServers().setMasterAddress("").setPassword("").addSlaveAddress(new String[]{"",""});
-        //集群
-        //config.useClusterServers().addNodeAddress(new String[]{"",""}).setPassword("");
-        try {
-            redissonClient = Redisson.create(config);
-            return redissonClient;
-        } catch (Exception e) {
-            log.error("RedissonClient init redis url :[{}]",url,e.getMessage());
-            return null;
-        }
+    @Bean(destroyMethod = "shutdown")
+    public RedissonClient redisson() throws IOException
+    {
+        RedissonClient redisson = Redisson.create(Config.fromYAML(new ClassPathResource("redisson-single.yml").getInputStream()));
+        return redisson;
     }
+
 
 }

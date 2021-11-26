@@ -52,7 +52,9 @@ public class TaskDelayedQueue extends AbstractDelayedQueue<Long> {
         return new TaskEventListener<Long>(offerId) {
             @Override
             protected void invoke(Long offerId) {
-                //TODO do something
+                final TaskDelayedQueue bean = SpringContextHelper.getBean(TaskDelayedQueue.class);
+
+                bean.addQueue(10L, 10L, TimeUnit.SECONDS);
             }
         };
     }
@@ -80,7 +82,8 @@ public class TaskDelayedQueue extends AbstractDelayedQueue<Long> {
      */
     public static void addDelayQueue(Long offerId, long delay){
         final TaskDelayedQueue bean = SpringContextHelper.getBean(TaskDelayedQueue.class);
-        bean.addQueue(offerId, delay, TimeUnit.SECONDS);
+
+        bean.addQueue(100L, 10L, TimeUnit.SECONDS);
     }
 
     /**

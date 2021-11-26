@@ -133,6 +133,7 @@ public abstract class AbstractDelayedQueue<T> {
                     if (take == null) {
                         continue;
                     }
+                    log.info("获取到任务,{}",take);
                     threadPoolExecutor.execute(getTaskEventListener(take));
                 } catch (InterruptedException e) {
                     log.error("关闭获取延时推送");
